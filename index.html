@@ -414,10 +414,22 @@
                 console.error("Falha na conexão com o backend:", error);
             }
         }
+        if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+      // Registro bem-sucedido
+      console.log('ServiceWorker registrado com sucesso: ', registration.scope);
+    }, function(err) {
+      // Falha no registro
+      console.log('Registro do ServiceWorker falhou: ', err);
+    });
+  });
+}
 
         // Inicialização
         carregarDados();
     });
     </script>
 </body>
+
 </html>

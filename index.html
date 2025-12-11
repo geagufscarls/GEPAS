@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Doenças</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        /* Cores Verde */
+        :root {
+            --cor-primaria: #2E8B57; /* Verde Mar Escuro */
+            --cor-secundaria: #3CB371; /* Verde Médio */
+            --cor-fundo: #f5f5f5;
+            --cor-branco: #fff;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-borda: #ddd;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--cor-fundo);
+            padding-top: 60px;
+        }
+
+        header {
+            width: 100%;
+            height: 60px;
+            background-color: var(--cor-primaria); /* Alterado para verde */
+            color: var(--cor-branco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .main-content {
+            margin-top: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-container {
+            max-width: 400px;
+            padding: 20px;
+            background: var(--cor-branco);
+            border-radius: 10px;
+            box-shadow: 0 0 10px var(--cor-sombra);
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, textarea, select, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 5px;
+        }
+
+        button {
+            background: var(--cor-primaria); /* Alterado para verde */
+            color: var(--cor-branco);
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: var(--cor-secundaria); /* Alterado para verde mais claro */
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .visualizacao-dados {
+            margin-top: 20px;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid var(--cor-borda);
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--cor-primaria); /* Alterado para verde */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Registro de Doenças</h1>
+    </header>
+
+    <div class="main-content">
+        <div class="app-container">
+            <form id="doencaForm">
+                <div class="form-group">
+                    <label for="nomeAvaliador">Nome do Avaliador:</label>
+                    <input type="text" id="nomeAvaliador" placeholder="Digite seu nome">
+                </div>
+                <div class="form-group">
+                    <label for="talhao">Talhão:</label>
+                    <select id="talhao">
+                        <option value="P3">P3</option>
+                        <option value="S2">S2</option>
+                        <option value="S4-1">S4-1</option>
+                        <option value="S4-2">S4-2</option>
+                        <option value="S7">S7</option>
+                        <option value="P1-B">P1-B</option>
+                        <option value="P1-A">P1-A</option>
+                        <option value="S5">S5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cultura">Cultura:</label>
+                    <select id="cultura">
+                        <option value="soja">Soja</option>
+                        <option value="milho">Milho</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="estagio">Estágio da cultura</label>
+                    <input type="text" id="estagio" placeholder="Digite o estágio">
+                </div>
+                
+                <div class="form-group">
+                    <label for="numeroPlanta">Número da Planta:</label>
+                    <div class="button-group">
+                        <button type="button" id="plantaAnterior">Anterior</button>
+                        <input type="number" id="numeroPlanta" value="1" readonly>
+                        <button type="button" id="plantaSeguinte">Seguinte</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="nomeDoenca">Doença:</label>
+                    <select id="nomeDoenca">
+                        <option value="Nenhuma">Nenhuma Doença Registrada</option>
+                        <optgroup label="Soja">
+                            <option value="Ferrugem-asiática">Ferrugem-asiática</option>
+                            <option value="Macha-alvo">Macha-alvo</option>
+                            <option value="Oídio">Oídio</option>
+                            <option value="Mofo-branco">Mofo-branco</option>
+                            <option value="Antracnose">Antracnose</option>
+                        </optgroup>
+                        <optgroup label="Milho">
+                            <option value="Enfezamento vermelho">Enfezamento vermelho</option>
+                            <option value="Enfezamento pálido">Enfezamento pálido</option>
+                        </optgroup>
+                        <option value="Outra">Outra</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="severidade">Severidade (%):</label>
+                    <select id="severidade">
+                        <option value="0%">0%</option>
+                        <option value="0.6%">0,6%</option>
+                        <option value="7.0%">7,0%</option>
+                        <option value="18.0%">18,0%</option>
+                        <option value="42.0%">42,0%</option>
+                        <option value="78.5%">78,5%</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="observacoes">Observações:</label>
+                    <textarea id="observacoes" placeholder="Detalhes sobre a planta ou doença"></textarea>
+                </div>
+                <button type="button" id="adicionarDoenca">Adicionar Doença</button>
+            </form>
+            <button id="baixarExcel">Baixar Excel</button>
+        </div>
+        <div class="visualizacao-dados">
+            <h2>Dados Registrados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Talhão</th>
+                        <th>Cultura</th>
+                        <th>Planta</th>
+                        <th>Avaliador</th>
+                        <th>Estágio</th>
+                        <th>Doença</th>
+                        <th>Severidade (%)</th>
+                        <th>Observações</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tabelaDados"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const numeroPlantaInput = document.getElementById('numeroPlanta');
+        const plantaAnteriorBtn = document.getElementById('plantaAnterior');
+        const plantaSeguinteBtn = document.getElementById('plantaSeguinte');
+        const adicionarDoencaBtn = document.getElementById('adicionarDoenca');
+        const tabelaDados = document.getElementById('tabelaDados');
+        const baixarExcelBtn = document.getElementById('baixarExcel');
+
+        let numeroPlanta = 1;
+        let dadosDoencas = [];
+
+        // --- Navegação entre Plantas ---
+        plantaAnteriorBtn.addEventListener('click', () => {
+            if (numeroPlanta > 1) {
+                numeroPlanta--;
+                numeroPlantaInput.value = numeroPlanta;
+            }
+        });
+
+        plantaSeguinteBtn.addEventListener('click', () => {
+            numeroPlanta++;
+            numeroPlantaInput.value = numeroPlanta;
+        });
+
+        // --- Adicionar Doença ---
+        adicionarDoencaBtn.addEventListener('click', () => {
+            const talhao = document.getElementById('talhao').value;
+            const cultura = document.getElementById('cultura').value;
+            const avaliador = document.getElementById('nomeAvaliador').value; 
+            const estagio = document.getElementById('estagio').value;
+            // const tecnica = document.getElementById('tecnica').value; // CAMPO REMOVIDO
+            const nomeDoenca = document.getElementById('nomeDoenca').value; 
+            const severidade = document.getElementById('severidade').value; 
+            const observacoes = document.getElementById('observacoes').value;
+
+            // A validação foi ajustada para remover a técnica
+            if (!avaliador || !cultura || !estagio) {
+                alert('Por favor, preencha todos os campos obrigatórios (Avaliador, Cultura, Estágio).');
+                return;
+            }
+
+            // Capturar coordenadas do usuário
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const latitude = position.coords.latitude.toFixed(6);
+                    const longitude = position.coords.longitude.toFixed(6);
+
+                    const registro = {
+                        Avaliador: avaliador,
+                        Talhao: talhao,
+                        Cultura: cultura,
+                        Planta: numeroPlanta,
+                        Estagio: estagio,
+                        // Tecnica: 'N/A', // REMOVIDO OU DEIXADO COMO N/A SE NECESSÁRIO NO EXCEL
+                        Doenca: nomeDoenca,
+                        Severidade: severidade,
+                        Observacoes: observacoes,
+                        Latitude: latitude,
+                        Longitude: longitude
+                    };
+
+                    dadosDoencas.push(registro);
+                    salvarDados();
+                    atualizarTabela();
+                    registrarDados(registro);
+                }, error => {
+                    alert("Erro ao obter localização: " + error.message + ". O registro será salvo sem coordenadas.");
+                    const registro = {
+                        Avaliador: avaliador,
+                        Talhao: talhao,
+                        Cultura: cultura,
+                        Planta: numeroPlanta,
+                        Estagio: estagio,
+                        // Tecnica: 'N/A', // REMOVIDO OU DEIXADO COMO N/A SE NECESSÁRIO NO EXCEL
+                        Doenca: nomeDoenca,
+                        Severidade: severidade,
+                        Observacoes: observacoes,
+                        Latitude: 'N/A',
+                        Longitude: 'N/A'
+                    };
+                    dadosDoencas.push(registro);
+                    salvarDados();
+                    atualizarTabela();
+                    registrarDados(registro);
+                });
+            } else {
+                alert("Geolocalização não suportada no navegador. O registro será salvo sem coordenadas.");
+                const registro = {
+                    Avaliador: avaliador,
+                    Talhao: talhao,
+                    Cultura: cultura,
+                    Planta: numeroPlanta,
+                    Estagio: estagio,
+                    // Tecnica: 'N/A', // REMOVIDO OU DEIXADO COMO N/A SE NECESSÁRIO NO EXCEL
+                    Doenca: nomeDoenca,
+                    Severidade: severidade,
+                    Observacoes: observacoes,
+                    Latitude: 'N/A',
+                    Longitude: 'N/A'
+                };
+                dadosDoencas.push(registro);
+                salvarDados();
+                atualizarTabela();
+                registrarDados(registro);
+            }
+        });
+
+        // --- Atualizar Tabela (Visualização) ---
+        function atualizarTabela() {
+            tabelaDados.innerHTML = '';
+            dadosDoencas.forEach((registro, index) => {
+                const row = document.createElement('tr');
+                
+                // Mapeia os campos na ordem correta da tabela
+                // O campo 'Tecnica' foi removido da lista
+                const campos = ['Talhao', 'Cultura', 'Planta', 'Avaliador', 'Estagio', 'Doenca', 'Severidade', 'Observacoes', 'Latitude', 'Longitude'];
+                
+                campos.forEach(key => {
+                    const cell = document.createElement('td');
+                    cell.textContent = registro[key];
+                    row.appendChild(cell);
+                });
+                
+                const actionsCell = document.createElement('td');
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Excluir';
+                deleteBtn.addEventListener('click', () => {
+                    dadosDoencas.splice(index, 1);
+                    salvarDados();
+                    atualizarTabela();
+                });
+                actionsCell.appendChild(deleteBtn);
+                row.appendChild(actionsCell);
+
+                tabelaDados.appendChild(row);
+            });
+        }
+
+        // --- Gerenciamento de Dados (LocalStorage) ---
+        function salvarDados() {
+            localStorage.setItem('dadosDoencas', JSON.stringify(dadosDoencas));
+        }
+
+        function carregarDados() {
+            const dadosSalvos = localStorage.getItem('dadosDoencas');
+            if (dadosSalvos) {
+                dadosDoencas = JSON.parse(dadosSalvos);
+                atualizarTabela();
+            }
+        }
+
+        // --- Exportar para Excel ---
+        baixarExcelBtn.addEventListener('click', () => {
+            if (dadosDoencas.length === 0) {
+                alert('Não há dados para exportar.');
+                return;
+            }
+
+            // Garante que o Excel seja gerado com os dados atuais (sem o campo 'Tecnica', se ele foi removido do objeto)
+            const dadosExportacao = dadosDoencas.map(reg => {
+                const { Tecnica, ...rest } = reg; // Remove explicitamente o campo Tecnica se existir
+                return rest;
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(dadosExportacao);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Doenças');
+
+            XLSX.writeFile(workbook, 'registro_doencas.xlsx');
+        });
+
+        // --- Tentativa de Conexão com Backend (Função Mantida) ---
+        async function registrarDados(dados) {
+            try {
+                const response = await fetch("http://127.0.0.1:5000", { 
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(dados),
+                });
+
+                if (response.ok) {
+                    console.log("Dados registrados com sucesso no backend!");
+                } else {
+                    console.error("Erro ao registrar dados no backend.");
+                }
+            } catch (error) {
+                console.error("Falha na conexão com o backend:", error);
+            }
+        }
+
+        // Inicialização
+        carregarDados();
+    });
+    </script>
+</body>
+</html>

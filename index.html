@@ -139,7 +139,7 @@
                           <option value="S2-Z25-26">S5</option>
                         <option value="P1-B">P1-B</option>
                         <option value="P1-A">P1-A</option>
-                       
+                       <option value="P2">P2</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -183,14 +183,7 @@
                 
                 <div class="form-group">
                     <label for="severidade">Severidade (%):</label>
-                    <select id="severidade">
-                        <option value="0%">0%</option>
-                        <option value="0.6%">0,6%</option>
-                        <option value="7.0%">7,0%</option>
-                        <option value="18.0%">18,0%</option>
-                        <option value="42.0%">42,0%</option>
-                        <option value="78.5%">78,5%</option>
-                    </select>
+                    <input type="text" id="severidade" placeholder="severidade">
                 </div>
                 <div class="form-group">
                     <label for="observacoes">Observações:</label>
@@ -279,7 +272,7 @@
                         Cultura: cultura,
                         Planta: numeroPlanta,
                         Estagio: estagio,
-                        // Tecnica: 'N/A', // REMOVIDO OU DEIXADO COMO N/A SE NECESSÁRIO NO EXCEL
+                        
                         Doenca: nomeDoenca,
                         Severidade: severidade,
                         Observacoes: observacoes,
@@ -434,4 +427,5 @@
 </body>
 
 </html>
+
 

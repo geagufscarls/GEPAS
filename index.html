@@ -181,10 +181,11 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="severidade">Severidade (%):</label>
-                    <input type="text" id="severidade" placeholder="severidade">
-                </div>
+                <div class="form-group" id="severidadeContainer">
+    <label for="severidade">Severidade (%):</label>
+    <input type="text" id="severidade" placeholder="severidade">
+</div>
+
                 <div class="form-group">
                     <label for="observacoes">Observações:</label>
                     <textarea id="observacoes" placeholder="Detalhes sobre a planta ou doença"></textarea>
@@ -226,6 +227,14 @@
         const adicionarDoencaBtn = document.getElementById('adicionarDoenca');
         const tabelaDados = document.getElementById('tabelaDados');
         const baixarExcelBtn = document.getElementById('baixarExcel');
+const nomeDoencaSelect = document.getElementById('nomeDoenca');
+const severidadeContainer = document.getElementById('severidadeContainer');
+
+const severidadesPorDoenca = {
+    "Ferrugem-asiática": ["0,6", "2", "7", "18", "42", "78,5"],
+    "Macha-alvo": ["1", "2", "5", "9", "19", "33", "52"],
+    "Míldio": ["2,4", "15,2", "25,9", "40,5", "66,6"]
+};
 
         let numeroPlanta = 1;
         let dadosDoencas = [];
@@ -242,6 +251,38 @@
             numeroPlanta++;
             numeroPlantaInput.value = numeroPlanta;
         });
+nomeDoencaSelect.addEventListener('change', () => {
+    const doencaSelecionada = nomeDoencaSelect.value;
+
+    // Limpa o container
+    severidadeContainer.innerHTML = `
+        <label for="severidade">Severidade (%):</label>
+    `;
+
+    // Se a doença tiver severidade pré-definida
+    if (severidadesPorDoenca[doencaSelecionada]) {
+        const select = document.createElement('select');
+        select.id = 'severidade';
+
+        severidadesPorDoenca[doencaSelecionada].forEach(valor => {
+            const option = document.createElement('option');
+            option.value = valor;
+            option.textContent = valor;
+            select.appendChild(option);
+        });
+
+        severidadeContainer.appendChild(select);
+    } 
+    // Caso contrário → campo livre
+    else {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'severidade';
+        input.placeholder = 'Digite a severidade (%)';
+
+        severidadeContainer.appendChild(input);
+    }
+});
 
         // --- Adicionar Doença ---
         adicionarDoencaBtn.addEventListener('click', () => {
@@ -427,5 +468,4 @@
 </body>
 
 </html>
-
 

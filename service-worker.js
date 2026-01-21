@@ -1,53 +1,39 @@
-const CACHE_NAME = 'doencas-cache-v1';
+const CACHE_NAME = "doenca-offline-v3";
 
-// Lista de todos os arquivos necessários para o funcionamento offline
-const urlsToCache = [
-  './',
-  './index.html',
-  'https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js', // Biblioteca Excel
-  './manifest.json',
-  // Adicione todos os seus arquivos de ícones aqui, ex: 'icons/icon-192x192.png'
+const FILES_TO_CACHE = [
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./xlsx.full.min.js"
 ];
 
-// Instalação: armazena os ativos estáticos
-self.addEventListener('install', event => {
+self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Cache aberto e arquivos pré-armazenados');
-        return cache.addAll(urlsToCache);
-      })
+      .then(cache => cache.addAll(FILES_TO_CACHE))
+      .then(() => self.skipWaiting())
   );
 });
 
-// Busca: serve conteúdo do cache, se disponível
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Retorna o recurso do cache
-        if (response) {
-          return response;
-        }
-        // Se não estiver no cache, faz a requisição de rede
-        return fetch(event.request);
-      })
-  );
-});
-
-// Ativação: limpa caches antigos
-self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
+self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            // Deleta qualquer cache que não esteja na lista
-            return caches.delete(cacheName);
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
           }
         })
-      );
+      )
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener("fetch", event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
     })
   );
 });

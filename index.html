@@ -353,7 +353,7 @@ nomeDoencaSelect.addEventListener('change', () => {
                         Observacoes: observacoes,
                        Latitude: position.coords.latitude.toFixed(6),
                     Longitude: position.coords.longitude.toFixed(6),
-                    Precisao_m: Math.round(position.coords.accuracy)
+               
                     };
 
                     dadosDoencas.push(registro);
@@ -421,7 +421,7 @@ nomeDoencaSelect.addEventListener('change', () => {
                 return;
             }
 
-            // Garante que o Excel seja gerado com os dados atuais (sem o campo 'Tecnica', se ele foi removido do objeto)
+           
             const dadosExportacao = dadosDoencas.map(reg => {
                 const { Tecnica, ...rest } = reg;
                 return rest;
@@ -465,3 +465,4 @@ nomeDoencaSelect.addEventListener('change', () => {
 </body>
 
 </html>
+

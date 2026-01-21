@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Doenças</title>
+    <title>GEPAS</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        /* Cores Verde */
+      
         :root {
-            --cor-primaria: #2E8B57; /* Verde Mar Escuro */
-            --cor-secundaria: #3CB371; /* Verde Médio */
+            --cor-primaria: #20a100; /* Verde Mar Escuro */
+            --cor-secundaria: #20a100; /* Verde Médio */
             --cor-fundo: #f5f5f5;
             --cor-branco: #fff;
             --cor-sombra: rgba(0, 0, 0, 0.1);
@@ -118,7 +118,7 @@
 </head>
 <body>
     <header>
-        <h1>Registro de Doenças</h1>
+        <h1>GEPAS</h1>
     </header>
 
     <div class="main-content">
@@ -131,15 +131,20 @@
                 <div class="form-group">
                     <label for="talhao">Talhão:</label>
                     <select id="talhao">
-                        <option value="S4-A">S4-A</option>
-                        <option value="S4-B">S4-B</option>
-                        <option value="S4-1">S4-1</option>
-                        <option value="S4-2">S4-2</option>
-                        <option value="S2-Z18">S2-Z18</option>
-                          <option value="S2-Z25-26">S5</option>
-                        <option value="P1-B">P1-B</option>
-                        <option value="P1-A">P1-A</option>
-                       <option value="P2">P2</option>
+                        <option value="P2-Regenerativo">P2-Regenerativo</option>
+                        <option value="P3-A-Regenerativo">P3-A-Regenerativo</option>
+                        <option value="P3-B-Regenerativo">P3-B-Regenerativo</option>
+                        <option value="P1-A-Milho-Transição">P1-A-Milho-Transição</option>
+                        <option value="P1-B-Milho-Transição">P1-B-Milho-Transição</option>
+                        <option value="S1-Milho-Transição">S1-Milho-Transição</option>
+                        <option value="S2-Milho-Transição">S2-Milho-Transição</option>
+                        <option value="S2-Soja-Transição">S2-Soja-Transição</option>
+                        <option value="S3-Soja-Transição">S3-Soja-Transição</option>
+                        <option value="S4-A-Soja-Transição">S4-A-Soja-Transição</option>
+                        <option value="S4-B-Soja-Transição">S4-B-Soja-Transição</option>
+                        <option value="S5-Milho-Transição">S5-Milho-Transição</option>
+                        <option value="S7-Soja convencional">S7-Soja convencional</option>
+                    <option value="S9-Soja convencional">S9-Soja convencional</option>    
                     </select>
                 </div>
                 <div class="form-group">
@@ -155,6 +160,14 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="numeroPonto">Número da Ponto:</label>
+                    <div class="button-group">
+                        <button type="button" id="pontoAnterior">Anterior</button>
+                        <input type="number" id="numeroPonto" value="1" readonly>
+                        <button type="button" id="pontoSeguinte">Seguinte</button>
+                    </div>
+                </div>
+                  <div class="form-group">
                     <label for="numeroPlanta">Número da Planta:</label>
                     <div class="button-group">
                         <button type="button" id="plantaAnterior">Anterior</button>
@@ -170,6 +183,7 @@
                             <option value="Ferrugem-asiática">Ferrugem-asiática</option>
                             <option value="Macha-alvo">Macha-alvo</option>
                             <option value="Oídio">Oídio</option>
+                             <option value="Míldio">Míldio</option>
                             <option value="Mofo-branco">Mofo-branco</option>
                             <option value="Antracnose">Antracnose</option>
                         </optgroup>
@@ -201,6 +215,7 @@
                     <tr>
                         <th>Talhão</th>
                         <th>Cultura</th>
+                        <th>Ponto</th>
                         <th>Planta</th>
                         <th>Avaliador</th>
                         <th>Estágio</th>
@@ -218,10 +233,13 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+ <script src="./xlsx.full.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const numeroPlantaInput = document.getElementById('numeroPlanta');
+         const pontoAnteriorBtn = document.getElementById('pontoAnterior');
+         const numeroPontoInput = document.getElementById('numeroPonto'); // Adicione esta linha
+        const pontoSeguinteBtn = document.getElementById('pontoSeguinte');
         const plantaAnteriorBtn = document.getElementById('plantaAnterior');
         const plantaSeguinteBtn = document.getElementById('plantaSeguinte');
         const adicionarDoencaBtn = document.getElementById('adicionarDoenca');
@@ -233,13 +251,26 @@ const severidadeContainer = document.getElementById('severidadeContainer');
 const severidadesPorDoenca = {
     "Ferrugem-asiática": ["0,6", "2", "7", "18", "42", "78,5"],
     "Macha-alvo": ["1", "2", "5", "9", "19", "33", "52"],
-    "Míldio": ["2,4", "15,2", "25,9", "40,5", "66,6"]
+    "Míldio": ["2,4", "15,2", "25,9", "40,5", "66,6"],
+    "Oídio": ["0", "3", "6", "12", "24", "48", "80", "100"]
 };
-
+         let numeroPonto = 1;
         let numeroPlanta = 1;
         let dadosDoencas = [];
 
         // --- Navegação entre Plantas ---
+         pontoAnteriorBtn.addEventListener('click', () => {
+            if (numeroPonto > 1) {
+                numeroPonto--;
+                numeroPontoInput.value = numeroPonto;
+            }
+        });
+
+        pontoSeguinteBtn.addEventListener('click', () => {
+            numeroPonto++;
+            numeroPontoInput.value = numeroPonto;
+        });
+
         plantaAnteriorBtn.addEventListener('click', () => {
             if (numeroPlanta > 1) {
                 numeroPlanta--;
@@ -302,80 +333,52 @@ nomeDoencaSelect.addEventListener('change', () => {
             }
 
             // Capturar coordenadas do usuário
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const latitude = position.coords.latitude.toFixed(6);
-                    const longitude = position.coords.longitude.toFixed(6);
+             if (!("geolocation" in navigator)) {
+            alert("Geolocalização não suportada.");
+            return;
+        }
 
-                    const registro = {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                   const registro = {
                         Avaliador: avaliador,
                         Talhao: talhao,
                         Cultura: cultura,
+                        Ponto: numeroPonto,
                         Planta: numeroPlanta,
                         Estagio: estagio,
                         
                         Doenca: nomeDoenca,
                         Severidade: severidade,
                         Observacoes: observacoes,
-                        Latitude: latitude,
-                        Longitude: longitude
+                       Latitude: position.coords.latitude.toFixed(6),
+                    Longitude: position.coords.longitude.toFixed(6),
+                    Precisao_m: Math.round(position.coords.accuracy)
                     };
 
                     dadosDoencas.push(registro);
                     salvarDados();
                     atualizarTabela();
                     registrarDados(registro);
-                }, error => {
-                    alert("Erro ao obter localização: " + error.message + ". O registro será salvo sem coordenadas.");
-                    const registro = {
-                        Avaliador: avaliador,
-                        Talhao: talhao,
-                        Cultura: cultura,
-                        Planta: numeroPlanta,
-                        Estagio: estagio,
-                        // Tecnica: 'N/A', // REMOVIDO OU DEIXADO COMO N/A SE NECESSÁRIO NO EXCEL
-                        Doenca: nomeDoenca,
-                        Severidade: severidade,
-                        Observacoes: observacoes,
-                        Latitude: 'N/A',
-                        Longitude: 'N/A'
-                    };
-                    dadosDoencas.push(registro);
-                    salvarDados();
-                    atualizarTabela();
-                    registrarDados(registro);
-                });
-            } else {
-                alert("Geolocalização não suportada no navegador. O registro será salvo sem coordenadas.");
-                const registro = {
-                    Avaliador: avaliador,
-                    Talhao: talhao,
-                    Cultura: cultura,
-                    Planta: numeroPlanta,
-                    Estagio: estagio,
-                    // Tecnica: 'N/A', // REMOVIDO OU DEIXADO COMO N/A SE NECESSÁRIO NO EXCEL
-                    Doenca: nomeDoenca,
-                    Severidade: severidade,
-                    Observacoes: observacoes,
-                    Latitude: 'N/A',
-                    Longitude: 'N/A'
-                };
-                dadosDoencas.push(registro);
-                salvarDados();
-                atualizarTabela();
-                registrarDados(registro);
+                }, 
+                 error => {
+                alert("Erro ao obter localização: " + error.message);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
             }
-        });
+        );
+    });
+
 
         // --- Atualizar Tabela (Visualização) ---
         function atualizarTabela() {
             tabelaDados.innerHTML = '';
             dadosDoencas.forEach((registro, index) => {
                 const row = document.createElement('tr');
-                
-                // Mapeia os campos na ordem correta da tabela
-                // O campo 'Tecnica' foi removido da lista
-                const campos = ['Talhao', 'Cultura', 'Planta', 'Avaliador', 'Estagio', 'Doenca', 'Severidade', 'Observacoes', 'Latitude', 'Longitude'];
+                const campos = ['Talhao', 'Cultura', 'Ponto', 'Planta', 'Avaliador', 'Estagio', 'Doenca', 'Severidade', 'Observacoes', 'Latitude', 'Longitude'];
                 
                 campos.forEach(key => {
                     const cell = document.createElement('td');
@@ -420,7 +423,7 @@ nomeDoencaSelect.addEventListener('change', () => {
 
             // Garante que o Excel seja gerado com os dados atuais (sem o campo 'Tecnica', se ele foi removido do objeto)
             const dadosExportacao = dadosDoencas.map(reg => {
-                const { Tecnica, ...rest } = reg; // Remove explicitamente o campo Tecnica se existir
+                const { Tecnica, ...rest } = reg;
                 return rest;
             });
 
@@ -431,7 +434,7 @@ nomeDoencaSelect.addEventListener('change', () => {
             XLSX.writeFile(workbook, 'registro_doencas.xlsx');
         });
 
-        // --- Tentativa de Conexão com Backend (Função Mantida) ---
+
         async function registrarDados(dados) {
             try {
                 const response = await fetch("http://127.0.0.1:5000", { 
@@ -449,23 +452,16 @@ nomeDoencaSelect.addEventListener('change', () => {
                 console.error("Falha na conexão com o backend:", error);
             }
         }
-        if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-      // Registro bem-sucedido
-      console.log('ServiceWorker registrado com sucesso: ', registration.scope);
-    }, function(err) {
-      // Falha no registro
-      console.log('Registro do ServiceWorker falhou: ', err);
-    });
-  });
-}
+         carregarDados();
+          if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(reg => console.log('Service Worker registrado:', reg.scope))
+            .catch(err => console.error('Erro no Service Worker:', err));
+    }
 
-        // Inicialização
-        carregarDados();
+        
     });
     </script>
 </body>
 
 </html>
-
